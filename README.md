@@ -2,11 +2,11 @@
 This is the GitHub repository for a blockchain-based platform created by team G(OLD) for the SSET Capstone Project 2024.    
 
 ### Team members
-Tran Xuan Hoang Dat	 s3651550  
-Nguyen Ha Minh Duy 	 s3852307  
-Ngo Minh Hoang	 	   s3926829  
-Mai Le Anh Huy 	 	   s3836278  
-Nguyen Cong Phuong	 s3804846  
+Tran Xuan Hoang Dat (s3651550)      
+Nguyen Ha Minh Duy (s3852307)      
+Ngo Minh Hoang (s3926829)    
+Mai Le Anh Huy (s3836278)    
+Nguyen Cong Phuong (s3804846)    
 
 ## Initial solution design
 ### Scope 
@@ -24,18 +24,18 @@ Nguyen Cong Phuong	 s3804846
 
 ### Technology   
 1. Frontend    
-   Web3.js: A JavaScript library to interact with the Ethereum blockchain.   
-   React: Front-end framework for building dynamic and responsive user interfaces.  
-   Tailwind: CSS framework for styling components with ease and consistency.  
-   JavaScript: Website programming language.  
+   - Web3.js: A JavaScript library to interact with the Ethereum blockchain.   
+   - React: Front-end framework for building dynamic and responsive user interfaces.  
+   - Tailwind: CSS framework for styling components with ease and consistency.  
+   - JavaScript: Website programming language.  
 2. Backend  
-   Node.js: Javascript runtime environment for developing scalable and efficient backend services.  
-   Express.js: A web application framework for Node.js, used to build robust backend APIs.  
-   Web3.js: Utilize the development environment and testing framework for Ethereum.  
-   MongoDB: A NoSQL database for storing off-chain data.  
+   - Node.js: Javascript runtime environment for developing scalable and efficient backend services.  
+   - Express.js: A web application framework for Node.js, used to build robust backend APIs.  
+   - Web3.js: Utilize the development environment and testing framework for Ethereum.  
+   - MongoDB: A NoSQL database for storing off-chain data.  
 3. Blockchain  
-   Solidity: Programming languages for writing Ethereum smart contracts.  
-   Truffle:  A development environment and testing framework for Ethereum.  
-   Ganache: A personal blockchain for Ethereum development, providing a local testing environment to simulate blockchain networks and facilitate contract testing.  
+   - Solidity: Programming languages for writing Ethereum smart contracts.  
+   - Truffle:  A development environment and testing framework for Ethereum.  
+   - Ganache: A personal blockchain for Ethereum development, providing a local testing environment to simulate blockchain networks and facilitate contract testing.  
 4. Cryptocurrency wallet    
-   Metamask: The most popular cryptocurrency wallet, used for integrating with Ethereum wallets to sign transactions.  
+   - Metamask: The most popular cryptocurrency wallet, used for integrating with Ethereum wallets to sign transactions.  
