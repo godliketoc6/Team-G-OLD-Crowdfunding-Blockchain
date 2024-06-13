@@ -1,7 +1,7 @@
 import { ConnectButton } from "thirdweb/react";
 import { client } from "./client";
-import { Register } from "./components/Register";
-import { Signin } from "./components/Signin";
+import { Register } from "./pages/Register";
+import { Signin } from "./pages/Signin";
 
 export function App() {
   return (
