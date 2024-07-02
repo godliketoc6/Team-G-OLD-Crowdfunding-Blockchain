@@ -9,10 +9,15 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.6.0",
     "dotenv": "^16.4.5",
     "react": "^18.3",
     "react-dom": "^18.3",
-    "thirdweb": "^5"
+    "react-hook-form": "^7.51.5",
+    "react-hot-toast": "^2.4.1",
+    "react-router-dom": "^6.24.0",
+    "thirdweb": "^5",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.14.2",
