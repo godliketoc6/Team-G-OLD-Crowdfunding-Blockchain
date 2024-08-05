@@ -24,6 +24,11 @@ interface SignUpBody{
     password?: string;
 }
 
+interface LoginBody {
+    email?: string,
+    password?: string,
+}
+
 export const signUp: RequestHandler<unknown, unknown, SignUpBody, unknown> = async (req, res, next) => {
     const username = req.body.username;
     const email = req.body.email;
@@ -62,21 +67,17 @@ export const signUp: RequestHandler<unknown, unknown, SignUpBody, unknown> = asy
         next(error);
     }
 };
-interface LoginBody {
-    username?: string,
-    password?: string,
-}
 
 export const login: RequestHandler<unknown, unknown, LoginBody, unknown> = async (req, res, next) => {
-    const username = req.body.username;
+    const email = req.body.email;
     const password = req.body.password;
 
     try {
-        if (!username || !password) {
+        if (!email || !password) {
             throw createHttpError(400, "Parameters missing");
         }
 
-        const user = await UserModel.findOne({ username: username }).select("+password +email").exec();
+        const user = await UserModel.findOne({ email: email }).select("+password +email").exec();
 
         if (!user) {
             throw createHttpError(401, "Invalid credentials");
