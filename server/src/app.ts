@@ -6,8 +6,13 @@ import createHttpError, {isHttpError} from "http-errors";
 import session from "express-session";
 import env from"./util/validateEnv";
 import MongoStore from "connect-mongo";
+import cors from "cors";
+
+// import { sdk } from "./server";
 
 const app = express();
+
+app.use(cors());
 
 app.use(morgan("dev"));
 
