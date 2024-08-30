@@ -14,7 +14,7 @@ interface Campaign {
     handleClick: () => void;
 }
 
-const Campaign: React.FC<Campaign> = ({ owner, title, description, target, deadline, amountCollected, image, handleClick }) => {
+const Campaign = ({ owner, title, description, target, deadline, amountCollected, image, handleClick } : Campaign) => {
     const [targetUsdt, setTargetUsdt] = useState<string>('');
     const deadlineNumber = deadline.toNumber();
     const remainingDays = daysLeft(deadlineNumber);

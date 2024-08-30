@@ -30,7 +30,7 @@ export const Signup = () => {
         } catch (error: unknown) {
             console.error("Sign up error:", error);
             if (error instanceof Error) {
-                toast.error(`Sign up failed: ${error.message}`);
+                toast.error(`Username or email already taken. Please choose a different one or log in instead.`);
             } else {
                 toast.error("An unknown error occurred during sign up");
             }

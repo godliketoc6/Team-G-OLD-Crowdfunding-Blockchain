@@ -4,7 +4,7 @@ const DefaultNavBar = () => {
   return (
     <nav className="navbar bg-base-100">
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl">G(OLD)</a>
+        <a className="btn btn-ghost text-xl" href='/'>G(OLD)</a>
       </div>
     </nav>
   )

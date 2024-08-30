@@ -67,4 +67,11 @@ contract Crowdfunding {
 
         return allCampaigns;
     }
+
+    function addOffChainDonation(uint256 _id, uint256 _amount, address _donator) public {
+        Campaign storage campaign = campaigns[_id];
+        campaign.donators.push(_donator);
+        campaign.donations.push(_amount);
+        campaign.amountCollected += _amount;
+    }
 }

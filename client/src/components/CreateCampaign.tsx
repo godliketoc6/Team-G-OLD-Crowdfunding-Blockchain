@@ -37,11 +37,11 @@ export const CreateCampaign = () => {
                 setIsLoading(true);
                 toast.loading('Creating campaign...');
                 try {
-                    // await createCampaign({
-                    //     ...data,
-                    //     target: ethers.utils.parseUnits(data.target, 18), // Ensure target is a string
-                    //     deadline: data.deadline ? data.deadline : new Date(), // Use current date if no deadline is set
-                    // });
+                    await createCampaign({
+                        ...data,
+                        target: ethers.utils.parseUnits(data.target, 18), // Ensure target is a string
+                        deadline: data.deadline ? data.deadline : new Date(), // Use current date if no deadline is set
+                    });
                     toast.dismiss();
                     toast.success('Campaign created successfully!');
                     setTimeout(() => {
@@ -156,4 +156,3 @@ export const CreateCampaign = () => {
         </div>
     );
 };
-

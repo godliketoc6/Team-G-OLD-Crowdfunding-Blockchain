@@ -1,8 +1,8 @@
-import { createThirdwebClient, getContract, resolveMethod } from "thirdweb";
-import { defineChain } from "thirdweb/chains";
-import { ThirdwebProvider } from "thirdweb/react";
+import { createThirdwebClient } from "thirdweb";
+
+const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 
 // create the client with your clientId, or secretKey if in a server environment
 export const client = createThirdwebClient({ 
-  clientId: "e3328268cb9380113ff1ef19bc806016", 
+  clientId: CLIENT_ID as string, 
 });
