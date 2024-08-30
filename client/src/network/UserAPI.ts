@@ -13,25 +13,19 @@ export interface LoginCredentials {
 }
 
 async function fetchData(input: RequestInfo, init?: RequestInit) {
-    const response = await fetch(input, init);
+    const response = await fetch(input, {
+        ...init,
+        credentials: 'include', // Ensures cookies (like session cookies) are included in the request
+    });
     if (response.ok) {
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-            return await response.json();
-        } else {
-            return await response.text();
-        }
+        return response;
     } else {
-        let errorMessage;
-        try {
-            const errorBody = await response.json();
-            errorMessage = errorBody.error || `HTTP error! status: ${response.status}`;
-        } catch (e) {
-            errorMessage = `HTTP error! status: ${response.status}`;
-        }
-        throw new Error(errorMessage);
+        const errorBody = await response.json();
+        const errorMessage = errorBody.error;
+        throw Error(errorMessage);
     }
 }
+
 
 export async function getLoggedInUser(): Promise<User> {
     const response = await fetchData("http://localhost:5000/api/users", { method: "GET" });
@@ -39,39 +33,27 @@ export async function getLoggedInUser(): Promise<User> {
 }
 
 export async function signUp(credentials: SignUpCredentials): Promise<User> {
-    const url = "http://localhost:5000/api/users/signup"; 
-    try {
-        const response = await fetchData(url, {
+    const response = await fetchData("http://localhost:5000/api/users/signup",
+        {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(credentials),
         });
-        console.log("Sign up response:", response);
-        return response as User;
-    } catch (error) {
-        console.error("Sign up error:", error);
-        throw error;
-    }
+    return response.json();
 }
 
 export async function login(credentials: LoginCredentials): Promise<User> {
-    const url = "http://localhost:5000/api/users/login"; 
-    try {
-        const response = await fetchData(url, {
+    const response = await fetchData("http://localhost:5000/api/users/login",
+        {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(credentials),
         });
-        console.log("Sign up response:", response);
-        return response as User;
-    } catch (error) {
-        console.error("Sign up error:", error);
-        throw error;
-    }
+    return response.json();
 }
 
 export async function logout() {

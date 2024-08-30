@@ -6,12 +6,18 @@ import createHttpError, {isHttpError} from "http-errors";
 import session from "express-session";
 import env from"./util/validateEnv";
 import MongoStore from "connect-mongo";
+import cors from "cors";
 
 const app = express();
 
 app.use(morgan("dev"));
 
 app.use(express.json());
+
+app.use(cors({
+    origin: "http://localhost:5173", // or your frontend URL
+    credentials: true, // This is important for cookies/sessions
+}));
 
 app.use(session({
     secret: env.SESSION_SECRET,

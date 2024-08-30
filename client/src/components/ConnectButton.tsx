@@ -1,10 +1,7 @@
 import { createThirdwebClient } from "thirdweb";
 import { useConnect } from "thirdweb/react";
 import { createWallet } from "thirdweb/wallets";
-
-const client = createThirdwebClient({ 
-    clientId: "e4e89e340d9d7445678ba22ed1c70010" 
-});
+import {client} from '../client'
 
 export function ConnectButton({ onConnect }: { onConnect: () => void }) {
   const { connect } = useConnect();

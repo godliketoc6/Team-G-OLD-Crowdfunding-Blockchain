@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 import { useStateContext } from "../context";
 import { calculateBarPercentage, daysLeft } from "../utils";
+import { convertEthToUsdt, convertUsdtToEth } from "./ConvertToUsdt";
+import { User } from "../models/User";
+import * as UserAPI from '../network/UserAPI';
 import LoginNavBar from "./layout/LoginNavBar";
-import NavBar from "./layout/NavBar";
-import { convertUsdtToEth } from "./ConvertToUsdt";
 
 interface Donators {
     donator: string;
@@ -17,11 +18,18 @@ const CampaignDetails = () => {
     const { state } = useLocation();
     const { donate, getDonations, contract, address } = useStateContext();
     const [isLoading, setIsLoading] = useState(false);
-    const [usdtAmount, setUsdtAmount] = useState("");
-    const [ethEquivalent, setEthEquivalent] = useState("");
+    const [amount, setAmount] = useState("");  // Reverted input
     const [donators, setDonators] = useState<Donators[]>([]);
     const campaignDeadline = ethers.BigNumber.from(state.deadline);
     const remainingDays = daysLeft(campaignDeadline.toNumber());
+    const [targetUsdt, setTargetUsdt] = useState("");
+    const [amountCollectedUsdt, setAmountCollectedUsdt] = useState("");
+    const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+
+    const handleClick = () => {
+        const stripeLink = `https://donate.stripe.com/test_14k9CC58l64yghi6oo`;
+        window.open(stripeLink, '_blank');
+    };
 
     const fetchDonators = async () => {
         const data = await getDonations(state.pId);
@@ -33,7 +41,7 @@ const CampaignDetails = () => {
         try {
             await donate({
                 ...state,
-                amountCollected: ethEquivalent, // Use the converted ETH amount
+                amountCollected: amount,  // Reverted input usage
             });
             navigate("/");
         } catch (error) {
@@ -48,21 +56,36 @@ const CampaignDetails = () => {
     }, [contract, address]);
 
     useEffect(() => {
-        const updateEthEquivalent = async () => {
-            if (usdtAmount && !isNaN(parseFloat(usdtAmount))) {
-                const ethAmount = await convertUsdtToEth(parseFloat(usdtAmount));
-                setEthEquivalent(ethAmount);
-            } else {
-                setEthEquivalent("");
+        const convertEthValuesToUsdt = async () => {
+            try {
+                const targetUsdtValue = await convertEthToUsdt(ethers.utils.parseEther(state.target));
+                const amountCollectedUsdtValue = await convertEthToUsdt(ethers.utils.parseEther(state.amountCollected));
+                setTargetUsdt(targetUsdtValue);
+                setAmountCollectedUsdt(amountCollectedUsdtValue);
+            } catch (error) {
+                console.error("Error converting ETH to USDT:", error);
             }
         };
-        updateEthEquivalent();
-    }, [usdtAmount]);
+
+        convertEthValuesToUsdt();
+    }, [state.target, state.amountCollected]);
+
+    useEffect(() => {
+        async function fetchLoggedInUser() {
+            try {
+                const user = await UserAPI.getLoggedInUser();
+                setLoggedInUser(user);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchLoggedInUser();
+    }, []);
 
     return (
         <div className="min-h-screen bg-base-200 p-4">
             <div className="navbar bg-base-100 rounded-box mb-4">
-                <NavBar />
+                <LoginNavBar user={loggedInUser as User} />
             </div>
 
             <div className="grid grid-cols-2 gap-4 h-auto">
@@ -79,7 +102,7 @@ const CampaignDetails = () => {
                             max="100"
                         ></progress>
                         <div className="flex justify-between mt-2 text-lg md:text-xl">
-                            <span>{state.amountCollected} raised of {state.target}</span>
+                            <span>{amountCollectedUsdt} USDT raised of {targetUsdt} USDT</span>
                             <span>{remainingDays} days left</span>
                         </div>
                     </div>
@@ -95,8 +118,8 @@ const CampaignDetails = () => {
                     </div>
                     <div className="card bg-base-100 shadow-xl">
                         <div className="card-body items-center text-center">
-                            <h2 className="card-title text-2xl md:text-3xl">Raised of {state.target} ETH</h2>
-                            <p className="text-2xl md:text-3xl font-bold">{state.amountCollected}  ETH</p>
+                            <h2 className="card-title text-2xl md:text-3xl">Raised of {targetUsdt} USDT</h2>
+                            <p className="text-2xl md:text-3xl font-bold">{amountCollectedUsdt} USDT</p>
                         </div>
                     </div>
                     <div className="card bg-base-100 shadow-xl">
@@ -106,7 +129,7 @@ const CampaignDetails = () => {
                         </div>
                     </div>
                     <div className="card bg-base-100 shadow-xl">
-                        <div className="card-body">
+                        <div className="card-body items-center text-center">
                             <h2 className="card-title text-2xl md:text-3xl">Creator</h2>
                             <div className="flex items-center mt-2">
                                 <span className="text-sm md:text-md truncate">{state.owner}</span>
@@ -128,12 +151,19 @@ const CampaignDetails = () => {
                             <h2 className="card-title text-xl md:text-2xl">Recent Donators</h2>
                             {donators.length > 0 ? (
                                 <div className="space-y-2 mt-4">
-                                    {donators.slice(0, 5).map((item, index) => (
-                                        <div key={`${item.donator}-${index}`} className="flex justify-between items-center">
-                                            <span className="text-xs md:text-sm truncate w-2/3">{item.donator}</span>
-                                            <span className="text-xs md:text-sm font-medium">{item.donation} ETH</span>
+                                    {donators.length > 0 ? (
+                                        <div className="space-y-2 mt-4">
+                                            {donators.slice(0, 5).map((item, index) => (
+                                                <div key={`${item.donator}-${index}`} className="flex justify-between items-center">
+                                                    <span className="text-xs md:text-sm truncate w-2/3">{item.donator}</span>
+                                                    <span className="text-xs md:text-sm font-medium">{item.donation} ETH</span>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
+                                    ) : (
+                                        <p className="text-lg md:text-xl mt-4">No donators yet. Be the first one!</p>
+                                    )}
+
                                 </div>
                             ) : (
                                 <p className="text-lg md:text-xl mt-4">No donators yet. Be the first one!</p>
@@ -142,32 +172,37 @@ const CampaignDetails = () => {
                     </div>
                 </div>
 
-
                 {/* Section 4: Fund Campaign */}
                 <div className="grid grid-cols-1 gap-4">
-                    <div className="card bg-base-100 shadow-xl">
-                        <div className="card-body">
-                            <h2 className="card-title justify-center text-xl md:text-2xl">Fund the Campaign</h2>
-                            <input
-                                type="number"
-                                placeholder="USDT"
-                                className="input input-bordered w-full mt-4 text-lg md:text-xl"
-                                value={usdtAmount}
-                                onChange={(e) => setUsdtAmount(e.target.value)}
-                            />
-                            <p className="text-lg mt-2">
-                                The campapaign will receive {ethEquivalent ? `${ethEquivalent} ETH` : '0 ETH'}
-                            </p>
-                            <button
-                                className={`text-lg md:text-xl btn btn-primary w-full ${isLoading ? 'loading' : ''}`}
+                <div className="card bg-base-100 shadow-xl">
+                    <div className="card-body">
+                        <h2 className="card-title justify-center text-xl md:text-2xl">Fund the Campaign</h2>
+                        <input
+                            type="number"
+                            placeholder="ETH 0.1"
+                            step="0.01"
+                            className="input input-bordered w-full mt-4 text-lg md:text-xl"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                        />
+                        <div className="flex justify-center space-x-4 mt-4">
+                            <button 
+                                className="btn btn-primary w-1/2"
                                 onClick={handleDonate}
-                                disabled={isLoading || !ethEquivalent}
+                                disabled={isLoading}
                             >
-                                {isLoading ? 'Processing...' : 'Fund Campaign'}
+                                {isLoading ? 'Processing...' : 'Pay with Metamask'}
+                            </button>
+                            <button 
+                                className="btn btn-primary w-1/2"
+                                onClick={handleClick}
+                            >
+                                {isLoading ? 'Processing...' : 'Pay with Card'}
                             </button>
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     );

@@ -22,12 +22,12 @@ export const convertEthToUsdt = async (ethAmount: BigNumber): Promise<string> =>
     const ethToUsdtRate = await fetchEthToUsdtRate();
     const ethAmountInNumber = parseFloat(ethers.utils.formatEther(ethAmount)); // Assuming ETH has 18 decimals
     const usdtAmount = ethAmountInNumber * ethToUsdtRate; // Convert ETH to USDT
-    return usdtAmount.toFixed(4); // Return the amount in USDT rounded to 6 decimal places
+    return usdtAmount.toFixed(0); // Return the amount in USDT rounded to 6 decimal places
 };
 
 export const convertUsdtToEth = async (usdtAmount: number): Promise<string> => {
     const ethToUsdtRate = await fetchEthToUsdtRate();
     const ethAmountInNumber = usdtAmount / ethToUsdtRate;
-    const roundedEthAmount = Number(ethAmountInNumber.toFixed(18));
+    const roundedEthAmount = Number(ethAmountInNumber.toFixed(4));
     return ethers.utils.formatEther(ethers.utils.parseEther(roundedEthAmount.toString()));
 };

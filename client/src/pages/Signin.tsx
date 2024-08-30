@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { signInSchema, TSignInSchema } from '../utils/SignIn';
 import DefaultNavBar from '../components/layout/DefaultNavBar';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
-import * as  UserAPI  from '../network/UserAPI'
+import * as UserAPI from '../network/UserAPI'
 import { useNavigate } from 'react-router-dom';
 
 export const Signin = () => {
@@ -24,15 +24,13 @@ export const Signin = () => {
         try {
             const user = await UserAPI.login(data);
             console.log("Login response:", user); // Log the response for debugging
-            toast.success("Sign in successful!");
+            toast.success(`Welcome back, ${user.username}!`); // Display a personalized welcome message
             navigate('/'); 
             reset();
-            // Assuming you have a function to set the user in your global state
-            // setLoggedInUser(user);
         } catch (error: unknown) {
             console.error("Sign in error:", error);
             if (error instanceof Error) {
-                toast.error(`Sign in failed: ${error.message}`);
+                toast.error(`Incorrect email or password`);
             } else {
                 toast.error("An unknown error occurred during sign in");
             }
